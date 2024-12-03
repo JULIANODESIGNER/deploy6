@@ -1,0 +1,81 @@
+services:
+  banco:
+    image: 'mysql:8.0'
+    environment:
+      MYSQL_ROOT_PASSWORD: '6PaBQtyszht1HEam'
+    volumes:
+      - 'mysql-volume:/var/lib/mysql'
+    command:
+      - '--character-set-server=utf8mb4'
+      - '--collation-server=utf8mb4_unicode_ci'
+      - '--default-authentication-plugin=mysql_native_password'
+    ports:
+      - '9910:3306'
+    restart: 'always'
+    logging:
+      options:
+        max-file: '5'
+        max-size: '10m'
+    networks:
+      proxy: ~
+    labels:
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.banco.entrypoints=web'
+      - 'traefik.http.routers.banco.rule=Host(`db.chicurl.pro`)'
+      - 'traefik.http.routers.banco-secure.entrypoints=websecure'
+      - 'traefik.http.routers.banco-secure.rule=Host(`db.chicurl.pro`)'
+      - 'traefik.http.routers.banco-secure.tls=true'
+      - 'traefik.http.routers.banco.tls.certresolver=leresolver'
+      - 'traefik.http.services.banco.loadbalancer.server.port=9910'
+      - 'traefik.docker.network=proxy'
+  traefik:
+    image: 'traefik:v2.5'
+    container_name: 'traefik'
+    restart: 'always'
+    security_opt:
+      - 'no-new-privileges:true'
+    networks:
+      - 'proxy'
+    command:
+      - '--providers.docker=true'
+      - '--providers.docker.exposedbydefault=false'
+      - '--entrypoints.web.address=:80'
+      - '--entrypoints.websecure.address=:443'
+      - '--entrypoints.web.http.redirections.entryPoint.to=websecure'
+      - '--entrypoints.web.http.redirections.entryPoint.scheme=https'
+      - '--certificatesresolvers.leresolver.acme.httpchallenge=true'
+      - '--certificatesresolvers.leresolver.acme.httpchallenge.entrypoint=web'
+      - '--certificatesresolvers.leresolver.acme.storage=/letsencrypt/acme.json'
+      - '--certificatesresolvers.leresolver.acme.tlschallenge=true'
+      - '--certificatesresolvers.leresolver.acme.email=julianodesigner@gmail.com'
+      - '--api.dashboard=true'
+    ports:
+      - '80:80'
+      - '443:443'
+      - '8080:8080'
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+      - 'letsencrypt:/letsencrypt'
+    logging:
+      options:
+        max-file: '5'
+        max-size: '10m'
+    labels:
+      - 'traefik.http.middlewares.traefik-auth.basicauth.users=admin:$$apr1$$WfOCmUBO$$CVpZagt4cOnE3golUFIUR.'
+      - 'traefik.http.routers.traefik.middlewares=traefik-auth'
+      - 'traefik.http.routers.traefik-secure.middlewares=traefik-auth'
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.traefik.entrypoints=web'
+      - 'traefik.http.routers.traefik.rule=Host(`traefik.chicurl.pro`)'
+      - 'traefik.http.routers.traefik.service=api@internal'
+      - 'traefik.http.routers.traefik-secure.entrypoints=websecure'
+      - 'traefik.http.routers.traefik-secure.rule=Host(`traefik.chicurl.pro`)'
+      - 'traefik.http.routers.traefik-secure.tls=true'
+      - 'traefik.http.routers.traefik.tls.certresolver=leresolver'
+      - 'traefik.http.routers.traefik-secure.service=api@internal'
+volumes:
+  mysql-volume: ~
+  letsencrypt:
+    driver: 'local'
+networks:
+  proxy: ~

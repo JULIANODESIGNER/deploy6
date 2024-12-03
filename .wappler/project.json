@@ -1,0 +1,91 @@
+{
+  "projectName": "deploy6",
+  "styleFile": "/css/style.css",
+  "assetsFolder": "/assets",
+  "designFramework": "bootstrap5",
+  "frameworks": [
+    {
+      "name": "fontawesome_5",
+      "type": "cdn"
+    },
+    {
+      "name": "bootstrap5",
+      "type": "local"
+    },
+    {
+      "name": "appConnect",
+      "type": "local"
+    }
+  ],
+  "hostingType": "wappler",
+  "projectServerModel": "node",
+  "runtime": "capacitor",
+  "webRootFolder": "/public",
+  "useRouting": true,
+  "addBase": true,
+  "routingHandler": "node",
+  "projectLinksType": "site",
+  "targets": [
+    {
+      "name": "Development",
+      "remoteURL": "http://localhost:3000/",
+      "access": "local",
+      "targetType": "wappler"
+    }
+  ],
+  "activeTarget": "Development",
+  "projectType": "web",
+  "resources": {
+    "providers": {
+      "hetzner": {
+        "provider-api-key": "f3nclmsPDLjzdDnB0SvFQZNTbdqZg9Yn24hWx3pXMqvCHhC0jJV6TGIDzWEF4qat",
+        "ssh-key-id": 25172594,
+        "ssh-key-file": "~/.ssh/id_ed25519.pub",
+        "server": {
+          "servidor": {
+            "id": 57097854,
+            "status": "running",
+            "access": true,
+            "ip_address": "188.245.230.131",
+            "location": "Falkenstein DC Park 1",
+            "price": 6.3,
+            "cpu": "Intel",
+            "cores": 4,
+            "cpu_type": "shared",
+            "memory": 8,
+            "disk": 80,
+            "ssh_keys": [
+              {
+                "ssh-key-file": "~/.ssh/id_ed25519.pub",
+                "name": "id_ed25519",
+                "type": "ed25519",
+                "fingerprint": "70:d8:2b:81:44:91:ea:51:b5:db:af:1a:7a:9a:a1:1f",
+                "id": 25172594
+              }
+            ],
+            "services": {
+              "banco": {
+                "engine": "mysql",
+                "version": "8.0",
+                "port": "9910",
+                "databases": {
+                  "demo": {
+                    "users": [
+                      "admin"
+                    ]
+                  }
+                },
+                "users": {
+                  "admin": {
+                    "password": "Art937146"
+                  }
+                }
+              },
+              "traefik": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}

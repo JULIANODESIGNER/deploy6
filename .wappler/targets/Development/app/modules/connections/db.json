@@ -1,0 +1,17 @@
+{
+  "name": "db",
+  "module": "dbconnector",
+  "action": "connect",
+  "options": {
+    "client": "mysql2",
+    "connection": {
+      "host": "188.245.230.131",
+      "port": 9910,
+      "user": "admin",
+      "password": "Art937146",
+      "database": "demo"
+    },
+    "tz": "utc"
+  },
+  "fileName": "db.json"
+}
